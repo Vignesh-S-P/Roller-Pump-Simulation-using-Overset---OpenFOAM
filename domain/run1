@@ -1,0 +1,23 @@
+#!/bin/sh
+echo "Import Mesh from UNV---------------------------------------------------------"
+ideasUnvToFoam ../cad/domain.unv > log.rollerPump
+
+echo "Merging Mesh from Roller 1---------------------------------------------------"
+mergeMeshes . ../roller1 -overwrite >> log.rollerPump
+
+echo "Merging Mesh from Roller 2---------------------------------------------------"
+mergeMeshes . ../roller2 -overwrite >> log.rollerPump
+
+echo "Change the patch types for the boundaries------------------------------------"
+changeDictionary >> log.rollerPump
+
+echo "creating Sets and Zones------------------------------------------------------"
+topoSet >> log.rollerPump
+
+echo "Creating 0 Dir---------------------------------------------------------------"
+cp -r 0.orig 0
+
+echo "SetFields--------------------------------------------------------------------"
+setFields >> log.rollerPump
+
+echo "Then use run2 for simulation-------------------------------------------------"

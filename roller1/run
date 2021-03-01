@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo -e "Mesh from UNV\n"
+ideasUnvToFoam ../cad/roller1.unv
+
+echo -e "changing patch types"
+changeDictionary
+
+echo -e "Creating TopoSet\n"
+topoSet

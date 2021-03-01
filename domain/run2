@@ -1,0 +1,7 @@
+#!/bin/sh
+echo "Decomposing For Parallel run-------------------------------------------------"
+decomposePar >> log.rollerPump
+
+echo "Running In Parallel----------------------------------------------------------"
+
+mpirun -np 3 overPimpleDyMFoam -parallel > log.run | tail -f log.run

@@ -1,0 +1,129 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1806                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+outputIntervalCtrl  100;  
+
+libs            ("liboverset.so");
+
+application     overPimpleDyMFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         5;
+
+deltaT          0.0001;
+
+writeControl     timeStep; //adjustableRunTime;
+
+writeInterval   $outputIntervalCtrl;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  no;
+
+maxCo           1;
+
+
+functions
+{
+    
+    forcesOnRoller1
+    {
+        type            forces;
+        libs            ("libforces.so");
+        writeControl    writeTime;	
+        writeFields     yes;
+        log             yes;
+        patches         ("rollerWall1");
+        rho             rhoInf;     // Indicates incompressible
+        log             true;
+        rhoInf          1;          // Redundant for incompressible
+        CofR            (0 0 0);    // Rotation around centre line of propeller
+
+    }
+    forcesOnRoller2
+    {
+        type            forces;
+        libs            ("libforces.so");
+        writeControl    writeTime;	
+        writeFields     yes;
+        log             yes;
+        patches         ("rollerWall2");
+        rho             rhoInf;     // Indicates incompressible
+        log             true;
+        rhoInf          1;          // Redundant for incompressible
+        CofR            (0 0 0);    // Rotation around centre line of propeller
+
+    }
+    forcesOnPipeWalls
+    {
+        type            forces;
+        libs            ("libforces.so");
+        writeControl    writeTime;	
+        writeFields     yes;
+        log             yes;
+        patches         ("walls");
+        rho             rhoInf;     // Indicates incompressible
+        log             true;
+        rhoInf          1;          // Redundant for incompressible
+        CofR            (0 0 0);    // Rotation around centre line of propeller
+
+    }
+    
+    wallShearStressOnPipeWall
+    {
+        type            wallShearStress;
+        libs            ("libfieldFunctionObjects.so");
+        patches         ("walls");
+        executeControl  timeStep;
+        writeControl    writeTime;
+    }
+    wallShearStressOnRollerWall1
+    {
+        type            wallShearStress;
+        libs            ("libfieldFunctionObjects.so");
+        patches         ("rollerWall1");
+        executeControl  timeStep;
+        writeControl    writeTime;
+    }
+    wallShearStressOnRollerWall2
+    {
+        type            wallShearStress;
+        libs            ("libfieldFunctionObjects.so");
+        patches         ("rollerWall2");
+        executeControl  timeStep;
+        writeControl    writeTime;
+    }
+}
+
+
+// ************************************************************************* //
